@@ -9,6 +9,8 @@ from enum import Enum
 # constant
 LINE_LIMIT = 100
 BODY_REQUIRED = False
+# TODO: moved to config later, changed to zh-CN after fix encoding issue
+LANG = 'en'
 
 TYPE_LIST = [
     'feat',  # 新功能（feature）
@@ -38,24 +40,46 @@ ErrorEnum = Enum('ErrorEnum',
                  module=__name__)
 
 # error message
+# TODO: moved to config or lang file later
 ERROR_MESSAGES = {
-    # Normal case
-    ErrorEnum.VALIDATED: '{errorname}：commit message 符合规范。',
-    ErrorEnum.MERGE: '{errorname}：检测到 merge commit，跳过规范检查。',
-    # File error
-    ErrorEnum.ARG_MISSING: '错误 {errorname}：缺少 commit message 文件参数。',
-    ErrorEnum.FILE_MISSING: '错误 {errorname}：文件 {filepath} 不存在。',
-    # Empty content
-    ErrorEnum.EMPTY_MESSAGE: '错误 {errorname}：commit message 没有内容或只有空白字符。',
-    ErrorEnum.EMPTY_HEADER: '错误 {errorname}：header （首行） 没有内容或只有空白字符。',
-    # Header error
-    ErrorEnum.BAD_HEADER_FORMAT: '错误 {errorname}：header （首行） 不符合规范：\n{header}\n如果检查没有发现错误，请确认是否使用了中文冒号，以及冒号后面漏了空格。',
-    ErrorEnum.WRONG_TYPE: '错误 {errorname}：{type} 不是以下关键字之一：\n%s' % (', '.join(TYPE_LIST)),
-    # Body error
-    ErrorEnum.BODY_MISSING: '错误 {errorname}：body 没有内容或只有空白字符。',  # 仅 BODY_REQUIRED 为 True时生效
-    ErrorEnum.NO_BLANK_LINE_BEFORE_BODY: '错误 {errorname}：header 和 body 之间没有空一行。',
-    # Common error
-    ErrorEnum.LINE_OVERLONG: '错误 {errorname}：单行内容长度为{length}，超过了%d个字符：\n{line}' % (LINE_LIMIT)
+    'en': {
+        # Normal case
+        ErrorEnum.VALIDATED: '{errorname}: commit message meet the rule.',
+        ErrorEnum.MERGE: '{errorname}: merge commit detected，skip check.',
+        # File error
+        ErrorEnum.ARG_MISSING: 'Error {errorname}: commit message file argument missing.',
+        ErrorEnum.FILE_MISSING: 'Error {errorname}: file {filepath} not exists.',
+        # Empty content
+        ErrorEnum.EMPTY_MESSAGE: 'Error {errorname}: commit message has no content except whitespaces.',
+        ErrorEnum.EMPTY_HEADER: 'Error {errorname}: header (first line) has no content except whitespaces.',
+        # Header error
+        ErrorEnum.BAD_HEADER_FORMAT: 'Error {errorname}: header (first line) not following the rule:\n{header}\nif you can not find any error after check, maybe you use Chinese colon, or lack of whitespace after the colon.',
+        ErrorEnum.WRONG_TYPE: 'Error {errorname}: {type} one of the keywords:\n%s' % (', '.join(TYPE_LIST)),
+        # Body error
+        ErrorEnum.BODY_MISSING: 'Error {errorname}: body has no content except whitespaces.',  # 仅 BODY_REQUIRED 为 True时生效
+        ErrorEnum.NO_BLANK_LINE_BEFORE_BODY: 'Error {errorname}: no empty line between header and body.',
+        # Common error
+        ErrorEnum.LINE_OVERLONG: 'Error {errorname}: the length of line is {length}, exceed %d:\n{line}' % (LINE_LIMIT)
+    },
+    'zh-CN': {
+        # Normal case
+        ErrorEnum.VALIDATED: '{errorname}：commit message 符合规范。',
+        ErrorEnum.MERGE: '{errorname}：检测到 merge commit，跳过规范检查。',
+        # File error
+        ErrorEnum.ARG_MISSING: '错误 {errorname}：缺少 commit message 文件参数。',
+        ErrorEnum.FILE_MISSING: '错误 {errorname}：文件 {filepath} 不存在。',
+        # Empty content
+        ErrorEnum.EMPTY_MESSAGE: '错误 {errorname}：commit message 没有内容或只有空白字符。',
+        ErrorEnum.EMPTY_HEADER: '错误 {errorname}：header （首行） 没有内容或只有空白字符。',
+        # Header error
+        ErrorEnum.BAD_HEADER_FORMAT: '错误 {errorname}：header （首行） 不符合规范：\n{header}\n如果检查没有发现错误，请确认是否使用了中文冒号，以及冒号后面漏了空格。',
+        ErrorEnum.WRONG_TYPE: '错误 {errorname}：{type} 不是以下关键字之一：\n%s' % (', '.join(TYPE_LIST)),
+        # Body error
+        ErrorEnum.BODY_MISSING: '错误 {errorname}：body 没有内容或只有空白字符。',  # 仅 BODY_REQUIRED 为 True时生效
+        ErrorEnum.NO_BLANK_LINE_BEFORE_BODY: '错误 {errorname}：header 和 body 之间没有空一行。',
+        # Common error
+        ErrorEnum.LINE_OVERLONG: '错误 {errorname}：单行内容长度为{length}，超过了%d个字符：\n{line}' % (LINE_LIMIT)
+    }
 }
 
 NON_FORMAT_ERROR = (
@@ -65,7 +89,21 @@ NON_FORMAT_ERROR = (
     ErrorEnum.FILE_MISSING
 )
 
-RULE_MESSAGE = '''
+# TODO: moved to config or lang file later
+RULE_MESSAGE = {
+    'en': '''
+Commit message rule as follow:
+<type>(<scope>): <subject>
+// empty line
+<body>
+// empty line
+<footer>
+
+(<scope>), <body> and <footer> are optional
+<type>  must be one of %s
+more specific instructions, please refer to http://192.168.19.127:3000/jayce/git-hook-commit-msg''' % (', '.join(TYPE_LIST)),
+
+    'zh-CN': '''
 Commit message 的格式要求如下：
 <type>(<scope>): <subject>
 // 空一行
@@ -76,6 +114,7 @@ Commit message 的格式要求如下：
 其中 (<scope>) <body> 和 <footer> 可选
 <type> 必须是 %s 中的一个
 更详细的格式要求说明，请参考 http://192.168.19.127:3000/jayce/git-hook-commit-msg''' % (', '.join(TYPE_LIST))
+}
 
 MERGE_PATTEN = r'^Merge '
 # 弱匹配，只检查基本的格式，各个部分允许为空，留到match.group(x)部分检查，以提供更详细的报错信息
@@ -88,9 +127,9 @@ HEADER_PATTEN = r'^((fixup! |squash! )?(\w+)(?:\(([^\)\s]+)\))?: (.+))(?:\n|$)'
 
 def print_error_msg(state, **kwargs):
     kwargs['errorname'] = state.name
-    print(ERROR_MESSAGES[state].format(**kwargs))
+    print(ERROR_MESSAGES[LANG][state].format(**kwargs))
     if state not in NON_FORMAT_ERROR:
-        print(RULE_MESSAGE)
+        print(RULE_MESSAGE[LANG])
 
 
 def check_header(header):
