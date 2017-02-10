@@ -1,4 +1,4 @@
 #!/bin/sh
 
 # exec < /dev/tty
-./.git/hooks/validate.py $1
+./.git/hooks/validate_commit_msg/validate.py $1
