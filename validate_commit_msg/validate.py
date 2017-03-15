@@ -101,7 +101,7 @@ Commit message rule as follow:
 
 (<scope>), <body> and <footer> are optional
 <type>  must be one of %s
-more specific instructions, please refer to http://192.168.19.127:3000/jayce/git-hook-commit-msg''' % (', '.join(TYPE_LIST)),
+more specific instructions, please refer to http://192.168.19.127:3000/ddcx-util/git-hook-commit-msg''' % (', '.join(TYPE_LIST)),
 
     'zh-CN': '''
 Commit message 的格式要求如下：
@@ -113,7 +113,7 @@ Commit message 的格式要求如下：
 
 其中 (<scope>) <body> 和 <footer> 可选
 <type> 必须是 %s 中的一个
-更详细的格式要求说明，请参考 http://192.168.19.127:3000/jayce/git-hook-commit-msg''' % (', '.join(TYPE_LIST))
+更详细的格式要求说明，请参考 http://192.168.19.127:3000/ddcx-util/git-hook-commit-msg''' % (', '.join(TYPE_LIST))
 }
 
 MERGE_PATTEN = r'^Merge '
