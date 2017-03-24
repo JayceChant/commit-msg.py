@@ -21,7 +21,8 @@ TYPE_LIST = [
     'perf',  # 提升性能（performance）
     'test',  # 增加测试
     'chore',  # 构建过程或辅助工具的变动'
-    'revert'  # 撤销以前的 commit
+    'revert',  # 撤销以前的 commit
+    'Revert'  # 有些版本的工具生成的revert message首字母大写
 ]
 
 # Error Enum
