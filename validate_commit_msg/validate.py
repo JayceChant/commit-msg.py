@@ -143,7 +143,7 @@ def check_header(header):
         print_error_msg(ErrorEnum.BAD_HEADER_FORMAT, header=header)
         return False
 
-    fixup_or_squash = bool(match.group(1))
+    fixup_or_squash = bool(match.group(2))
     type_ = match.group(3)
     # scope = match.group(4) # TODO: 根据配置对scope检查
     # subject = bool(match.group(5)) # TODO: 根据规则对subject检查
