@@ -117,13 +117,13 @@ Commit message 的格式要求如下：
 更详细的格式要求说明，请参考 http://192.168.19.127:3000/ddcx-util/git-hook-commit-msg''' % (', '.join(TYPE_LIST))
 }
 
-MERGE_PATTEN = r'^Merge '
+MERGE_PATTERN = r'^Merge '
 # 弱匹配，只检查基本的格式，各个部分允许为空，留到match.group(x)部分检查，以提供更详细的报错信息
-HEADER_PATTEN = r'^((fixup! |squash! )?(\w+)(?:\(([^\)\s]+)\))?: (.+))(?:\n|$)'
+HEADER_PATTERN = r'^((fixup! |squash! )?(\w+)(?:\(([^\)\s]+)\))?: (.+))(?:\n|$)'
 
 
 # 这三种header需要在原header上添加关键字，会使原本不超字数的header超出字数
-# SPECIAL_HEADER_PATTEN = r'^(fixup! |squash! |revert:)'
+# SPECIAL_HEADER_PATTERN = r'^(fixup! |squash! |revert:)'
 
 
 def print_error_msg(state, **kwargs):
@@ -138,7 +138,7 @@ def check_header(header):
         print_error_msg(ErrorEnum.EMPTY_HEADER)
         return False
 
-    match = re.match(HEADER_PATTEN, header)
+    match = re.match(HEADER_PATTERN, header)
     if not match:
         print_error_msg(ErrorEnum.BAD_HEADER_FORMAT, header=header)
         return False
@@ -193,7 +193,7 @@ def validate_commit_message(message):
         print_error_msg(ErrorEnum.EMPTY_MESSAGE)
         return False
 
-    if re.match(MERGE_PATTEN, message):
+    if re.match(MERGE_PATTERN, message):
         print_error_msg(ErrorEnum.MERGE)
         return True
 
