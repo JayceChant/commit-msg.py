@@ -140,13 +140,14 @@ def check_header(header):
 
     match = re.match(HEADER_PATTERN, header)
     if not match:
+        # `.` not match newline in python, so `or not match.group(5).strip()` not necessary
         print_error_msg(ErrorEnum.BAD_HEADER_FORMAT, header=header)
         return False
 
     fixup_or_squash = bool(match.group(2))
     type_ = match.group(3)
     # scope = match.group(4) # TODO: 根据配置对scope检查
-    # subject = bool(match.group(5)) # TODO: 根据规则对subject检查
+    # subject = match.group(5) # TODO: 根据规则对subject检查
 
     if type_ not in TYPE_LIST:
         print_error_msg(ErrorEnum.WRONG_TYPE, type=type_)
@@ -154,7 +155,7 @@ def check_header(header):
     # print(match.group(0, 1, 2, 3, 4, 5))
 
     length = len(header)
-    if length > LINE_LIMIT and not (fixup_or_squash or type_ == 'revert'):
+    if length > LINE_LIMIT and not (fixup_or_squash or type_ == 'revert' or type_ == 'Revert'):
         print_error_msg(ErrorEnum.LINE_OVERLONG, length=length, line=header)
         return False
 
